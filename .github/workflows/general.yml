@@ -1,16 +1,14 @@
 name: Rust
 
 on:
-  # NB: this differs from the book's project!
-  # These settings allow us to run this specific CI pipeline for PRs against
-  # this specific branch (a.k.a. book chapter).
+  # run on push to main branch
   push:
     branches:
-      - root-chapter-03-part0
+      - main
   pull_request:
     types: [ opened, synchronize, reopened ]
     branches:
-      - root-chapter-03-part0
+      - main
 
 env:
   CARGO_TERM_COLOR: always
