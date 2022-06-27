@@ -4,5 +4,5 @@ create table subscriptions(
     primary key (id),
     email text not null unique,
     name text not null,
-    subscribed_ta timestamptz not null
+    subscribed_at timestamptz not null
 );
