@@ -17,10 +17,7 @@ impl EmailClient {
         authorization_token: Secret<String>,
         timeout: std::time::Duration,
     ) -> Self {
-        let http_client = Client::builder()
-            .timeout(timeout)
-            .build()
-            .unwrap();
+        let http_client = Client::builder().timeout(timeout).build().unwrap();
 
         Self {
             http_client,
@@ -72,6 +69,7 @@ struct SendEmailRequest<'a> {
 
 #[cfg(test)]
 mod tests {
+    use claim::{assert_err, assert_ok};
     use fake::{
         faker::{
             internet::en::SafeEmail,
@@ -81,10 +79,9 @@ mod tests {
     };
     use secrecy::Secret;
     use wiremock::{
-        matchers::{header, header_exists, method, path, any},
+        matchers::{any, header, header_exists, method, path},
         Mock, MockServer, ResponseTemplate,
     };
-    use claim::{assert_ok, assert_err};
 
     use crate::domain::SubscriberEmail;
 
@@ -121,7 +118,12 @@ mod tests {
     }
 
     fn email_client(base_url: String) -> EmailClient {
-        EmailClient::new(base_url, email(), Secret::new(Faker.fake()), std::time::Duration::from_millis(200))
+        EmailClient::new(
+            base_url,
+            email(),
+            Secret::new(Faker.fake()),
+            std::time::Duration::from_millis(200),
+        )
     }
 
     #[tokio::test]
@@ -139,7 +141,9 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let _ = email_client.send_email(email(), &subject(), &content(), &content()).await;
+        let _ = email_client
+            .send_email(email(), &subject(), &content(), &content())
+            .await;
     }
 
     #[tokio::test]
